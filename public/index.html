@@ -1,65 +1,61 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>BabylonJS Demo</title>
-    <script src="https://cdn.babylonjs.com/babylon.max.js"></script>
-    <script src="https://cdn.babylonjs.com/gui/babylon.gui.min.js"></script>
 
-    <style>
-      #canvas {
-        width: 100%;
-        height: 100%;
-      }
-    </style>
-  </head>
-  <body>
-    <canvas id="canvas"></canvas>
+<head>
+  <meta charset="utf-8">
+  <title>SandCastle</title>
+  
+</head>
+<body>
+  <script src="../src/pixi.min.js"></script>
+  <script>
+    // Aliases
+    let Application = PIXI.Application,
+        Container = PIXI.Container,
+        loader = PIXI.loader,
+        resources = PIXI.loader.resources,
+        TextureCache = PIXI.utils.TextureCache,
+        Sprite = PIXI.Sprite;
 
-    <script>
-      window.addEventListener("DOMContentLoaded", function() {
-        var canvas = document.getElementById("canvas");
-        var engine = new BABYLON.Engine(canvas, true);
+    //Create a Pixi Application
+    let app = new PIXI.Application({
+      width: 256,
+      height: 256,
+      antialiasing: true,
+      transparent: false,
+      resolution: 1
+    });
 
-        var createScene = function() {
-          var scene = new BABYLON.Scene(engine);
-          scene.clearColor = new BABYLON.Color3.White();
-          var box = BABYLON.Mesh.CreateBox("Box", 4.0, scene);
-          var box2 = BABYLON.Mesh.CreateBox("Box2", 4.0, scene);
-          var material = new BABYLON.StandardMaterial("material1", scene);
-          material.wireframe = true;
-          box2.material = material;
-          box2.position = new BABYLON.Vector3(0,4,0);
-          // var camera = new BABYLON.FreeCamera("camera1",
-          //     new BABYLON.Vector3(0,6,-10), scene);
+    document.body.appendChild(app.view);
 
-          var camera = new BABYLON.ArcRotateCamera("arcCamera",
-              BABYLON.Tools.ToRadians(45),
-              BABYLON.Tools.ToRadians(45),
-              10.0, box.position, scene);
+    loader
+      .add("images/cat.png")
+      .load(setup);
 
-          // var camera = new BABYLON.FollowCamera("followCam", BABYLON.Vector3.Zero(), scene);
-          // camera.target = box;
-          // camera.radius = 50;
-          // camera.heightOffset = 50;
+    var cat, state;
 
-          // camera.setTarget(BABYLON.Vector3.Zero());
-          camera.attachControl(canvas, true);
+    function setup() {
+      cat = new Sprite(resources["images/cat.png"].texture);
+      cat.y = 96;
+      cat.vx = 0;
+      cat.vy = 0;
+      app.stage.addChild(cat);
 
-          // camera.keysUp.push(87);
-          // camera.keysDown.push(83);
-          // camera.keysLeft.push(65);
-          // camera.keysRight.push(68); FreeCamera
+      let left = keyboard(37),
+          up = keyboard(38),
+          right = keyboard(39),
+          down = keyboard(40);
 
-          return scene;
+      left.press = () => {
+        cat.vx = -5;
+        cat.vy = 0;
+      };
+      left.release = () => {
+        if(!right.isDown && cat.vy === 0) {
+          cat.vx = 0;
         }
-
-        var scene = createScene();
-        engine.runRenderLoop(function(){
-          //scene.getMeshByName("Box").position.z -= 0.01;
-          scene.render();
-        });
-      });
-    </script>
-  </body>
+      }
+    }
+  </script>
+</body>
 </html>
