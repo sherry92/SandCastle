@@ -1,52 +1,128 @@
+document.write('<script type="text/javascript" src="Problem.js"></script>');
+let Round=0;
+
+var treasureansArr = new Array();
+
+
 var app = new PIXI.Application(800, 700);
 document.body.appendChild(app.view);
 app.stage.interactive = true;
 
 var container = new PIXI.Container();
-//container.width = 100;
-//container.height = 100;
+
 app.stage.addChild(container);
 
 var texture = PIXI.Texture.fromImage('images/ground.png');
+var treasuretexture = PIXI.Texture.fromImage('images/treasurebox.png');
+var open_treasuretexture = PIXI.Texture.fromImage('images/open_treasurebox.png');
 var grasstexture = PIXI.Texture.fromImage('images/grass.png');
-var wintexture = PIXI.Texture.fromImage('images/win.png');
-
-
-//var treetexture = PIXI.Texture.fromImage('images/tree.png');
-//var tree = new PIXI.Sprite(treetexture);
-//tree.anchor.set(0.5, 0.5);
-//container.addChild(tree);
-//app.stage.addChild(container);
+var hide_grass = PIXI.Texture.fromImage('images/hide_grass.png');
+var stonetexture = PIXI.Texture.fromImage('images/stone.png');
+var hide_bunny = PIXI.Texture.fromImage('images/hide_mon.png');
+var bunnytexture = PIXI.Texture.fromImage('images/mon.png');    
 
 
 
 
-var maps = new Array();
+
+//var maps = new Array();
+var grassArr = new Array();
+var grassCnt = 0;
+
+var treasureArr = new Array();
+var treasureCnt = 0;
+
+var stoneArr = new Array();
+var stoneCnt = 0;
+
+var CheckArr = new Array();
+
+(function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' === document.location.protocol ? 'https' : 'http') +
+        '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+})();
+window.WebFontConfig = {
+    google: {
+        families: ['Snippet', 'Arvo:700italic', 'Podkova:700']
+    },
+
+    active: function() {
+        // do something
+        init();
+    }
+};
+
+function init()
+{
+  var countingText = new PIXI.Text(score(), {
+        fontWeight: 'bold',
+        fontStyle: 'italic',
+        fontSize: 30,
+        fontFamily: 'Arvo',
+        fill: '#3e1707',
+        align: 'center',
+        stroke: '#a4410e',
+        strokeThickness: 7
+    });
+
+    countingText.x = -20;
+    countingText.y = -80;
+    countingText.anchor.x = 0.5;
+    container.addChild(countingText);
+  }
+
+function score(){
+
+  var Score = "Player Score : 0";
+  return Score;
+}
 
 // Create a 5x5 grid of bunnies
 for (var i = 0; i < 100; i++) {
 	if(i%23==0)
 	{
-		var grass = new PIXI.Sprite(grasstexture);
-		grass.height = 50;
+    var grass = new PIXI.Sprite(grasstexture);
+    grass.height = 50;
 		grass.width = 50;
 		grass.anchor.set(0.5,0.5);
 		grass.x = (i % 10) * 50;
 		grass.y = Math.floor(i / 10) * 50;
 		container.addChild(grass);
-		maps[i]="grass";
+    grassArr[grassCnt]=grass;
+    grassCnt++;
 	}
 	else if( i%27==0)
-	{
-		var win = new PIXI.Sprite(wintexture);
-		win.height = 50;
-		win.width = 50;
-		win.anchor.set(0.5,0.5);
-		win.x = (i % 10) * 50;
-		win.y = Math.floor(i / 10) * 50;
-		container.addChild(win);
-		maps[i]="win";
-	}
+  {
+    var treasure = new PIXI.Sprite(treasuretexture);
+    treasure.height = 50;
+    treasure.width = 50;
+    treasure.anchor.set(0.5,0.5);
+    treasure.x = (i % 10) * 50;
+    treasure.y = Math.floor(i / 10) * 50;
+    container.addChild(treasure);
+    treasureArr[treasureCnt]=treasure;
+    CheckArr[treasureCnt]=false;
+    treasureCnt++;
+    
+  }
+  else if( i%31==0)
+  {
+    var stone = new PIXI.Sprite(stonetexture);
+    stone.height = 50;
+    stone.width = 50;
+    stone.anchor.set(0.5,0.5);
+    stone.x = (i % 10) * 50;
+    stone.y = Math.floor(i / 10) * 50;
+    container.addChild(stone);
+    stoneArr[stoneCnt]=stone;
+    stoneCnt++;
+    
+  }
 	else
 	{
 		var ground = new PIXI.Sprite(texture);
@@ -56,20 +132,9 @@ for (var i = 0; i < 100; i++) {
 		ground.x = (i % 10) * 50;
 		ground.y = Math.floor(i / 10) * 50;
 		container.addChild(ground);
-		maps[i]="ground";
+		
 	}
 }
-
-/*var thing = new PIXI.Graphics();
-grass.mask = thing;
-app.stage.on('pointerover', function() {
-    if (!grass.mask) {
-        grass.mask = thing;
-    }
-    else {
-        grass.mask = null;
-    }
-});*/
 
 
 // Center on the screen
@@ -93,33 +158,96 @@ PIXI.loader.add('bunny', 'images/mon.png').load(function (loader, resources) {
 
     bunny.anchor.x=0.5;
     bunny.anchor.y=0.5;
+    
 
     // Add the bunny to the scene we are building.
     container.addChild(bunny);
-
+    bunny.interactive = true;
     // kick off the animation loop (defined below)
     animate();
+    play();
 });
 
-
-/*
-if(hitTestRectagle(bunny, grass)){
-	var thing = new PIXI.Graphics();
-	grass.mask = thing;
-	if (!grass.mask) {
-	    grass.mask = thing;
-	}
-	else {
-	    grass.mask = null;
-	}
-}else
+//     문제에 대한 답
+for(var i=0; i<treasureCnt; i++)
 {
-
+  let count = i;
+  treasureArr[count].on('pointerdown', function(e){
+    if(CheckArr[count]==true)
+    {
+      alert(treasureansArr[count].ans);
+    }
+  });
 }
-*/
-/*function hitTestRectangle(r1, r2) {
 
-  //Define the variables we'll need to calculate
+function play(delta)
+{
+  requestAnimationFrame(play);
+  for(var i=0; i<grassCnt; i++)
+  {
+    if(hitTestRectangle(bunny, grassArr[i]))
+  	{
+      //var thing = new PIXI.Graphics();
+      grassArr[i].interactive=true;
+      grassArr[i].texture = hide_grass;
+      bunny.interactive = true;
+      bunny.texture = hide_bunny;
+      break;
+  	}
+  	else
+  	{
+      grassArr[i].mask =null;
+      bunny.texture = bunnytexture;
+      grassArr[i].texture = grasstexture;
+  	}
+  }
+
+  for(var i=0; i<treasureCnt; i++)
+  {
+    if(hitTestRectangle(bunny, treasureArr[i]))
+    {
+      //console.log("here"+i);
+      //var thing = new PIXI.Graphics();
+      treasureArr[i].interactive = true;
+      treasureArr[i].texture = open_treasuretexture;
+      CheckArr[i]= true;
+    }
+    else
+    {
+      //console.log("herett"+i);
+      treasureArr[i].mask =null;
+      treasureArr[i].texture = treasuretexture;
+      CheckArr[i]= false;
+    }
+  }
+
+  for(var i=0; i<stoneCnt; i++)
+  {
+    if(hitTestRectangle(bunny, stoneArr[i]))
+    {
+      if (pkeys[38]) { //up key
+        if(bunny.position.y > -10)
+          bunny.position.y+=1;
+      }
+      if (pkeys[40]) { //down key
+        if(bunny.position.y < 455)
+         bunny.position.y-=1;
+      }
+      if (pkeys[39]) { //up key
+        if(bunny.position.x < 455)
+            bunny.position.x-=1;
+      }
+      if (pkeys[37]) { //down key
+        if(bunny.position.x > -10)
+            bunny.position.x+=1;
+      }
+    }
+  }
+}
+
+
+function hitTestRectangle(r1, r2) {
+	//Define the variables we'll need to calculate
   let hit, combinedHalfWidths, combinedHalfHeights, vx, vy;
 
   //hit will determine whether there's a collision
@@ -167,32 +295,34 @@ if(hitTestRectagle(bunny, grass)){
   //`hit` will be either `true` or `false`
   return hit;
 };
-*/
+
 function animate() {
     // start the timer for the next animation loop
     requestAnimationFrame(animate);
-
     //apply keys
     if (pkeys[38]) { //up key
-      if(bunny.position.y > -10)
+      //if(bunny.position.y > -10)
       	bunny.position.y-=1;
     }
     if (pkeys[40]) { //down key
-    	if(bunny.position.y < 455)
+      //if(bunny.position.y < 455)
      	 bunny.position.y+=1;
     }
     if (pkeys[39]) { //up key
-    	if(bunny.position.x < 455)
+      //if(bunny.position.x < 455)
       		bunny.position.x+=1;
     }
     if (pkeys[37]) { //down key
-    	if(bunny.position.x > -10)
+      //if(bunny.position.x > -10)
       		bunny.position.x-=1;
     }
 
     // this is the main render call that makes pixi draw your container and its children.
     app.render(container);
 }
+
+
+
 var pkeys=[];
 window.onkeydown = function (e) {
     var code = e.keyCode ? e.keyCode : e.which;
@@ -204,74 +334,12 @@ window.onkeyup = function (e) {
   pkeys[code]=false;
 };
 
-/*
-var thing = new PIXI.Graphics();
-container.mask = thing;
 
-app.stage.on('pointerover', function() {
-    if (!container.mask) {
-        container.mask = thing;
-    }
-    else {
-        container.mask = null;
-    }
-});
+window.onload=function(){
+  let select = shuffle();
+  for(var i=0; i<3; i++)
+  {
+      treasureansArr[i]=select[i];
+  }
 
-
-app.ticker.add(function() {
-    thing.clear();
-    thing.beginFill(0x8bc5ff, 0.4);
-
-});
-
-
-var app = new PIXI.Application(800, 600, { antialias: true });
-document.body.appendChild(app.view);
-app.stage.interactive = true;
-
-var bg = PIXI.Sprite.fromImage('images/grass.png');
-bg.anchor.set(0.5);
-bg.x = app.screen.width/2;
-bg.y = app.screen.height/2;
-bg.width=600;
-bg.height=600;
-app.stage.addChild(bg);
-
-
-var container = new PIXI.Container();
-container.x = app.screen.width / 2;
-container.y = app.screen.height / 2;
-
-// add a bunch of sprites
-var panda =  PIXI.Sprite.fromImage('images/tree.png');
-panda.anchor.set(0.5);
-container.addChild(panda);
-app.stage.addChild(container);
-
-// let's create a moving shape
-//var thing = new PIXI.Graphics();
-//app.stage.addChild(thing);
-//thing.x = app.screen.width / 2;
-//thing.y = app.screen.height / 2;
-//thing.lineStyle(1);
-var thing = new PIXI.Graphics();
-container.mask = thing;
-
-
-app.stage.on('pointerover', function() {
-    if (!container.mask) {
-        container.mask = thing;
-    }
-    else {
-        container.mask = null;
-    }
-});
-
-/*
-app.ticker.add(function() {
-
-    thing.clear();
-
-    thing.beginFill(0x8bc5ff, 0.4);
-
-});*/
+};
