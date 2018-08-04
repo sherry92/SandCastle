@@ -4,7 +4,7 @@ let Round=0;
 var treasureansArr = new Array();
 
 
-var app = new PIXI.Application(800, 700);
+var app = new PIXI.Application(1500, 1500);
 document.body.appendChild(app.view);
 app.stage.interactive = true;
 
@@ -19,7 +19,8 @@ var grasstexture = PIXI.Texture.fromImage('images/grass.png');
 var hide_grass = PIXI.Texture.fromImage('images/hide_grass.png');
 var stonetexture = PIXI.Texture.fromImage('images/stone.png');
 var hide_bunny = PIXI.Texture.fromImage('images/hide_mon.png');
-var bunnytexture = PIXI.Texture.fromImage('images/mon.png');    
+var bunnytexture = PIXI.Texture.fromImage('images/mon.png');
+var hide_treasure_grasstexture = PIXI.Texture.fromImage('images/hide_treasure_grass.png');  
 
 
 
@@ -34,6 +35,9 @@ var treasureCnt = 0;
 
 var stoneArr = new Array();
 var stoneCnt = 0;
+
+var hide_treasure_grassArr = new Array();
+var hide_treasure_grassCnt =0;
 
 var CheckArr = new Array();
 
@@ -82,55 +86,78 @@ function score(){
   return Score;
 }
 
+
+
+var TreasureTotalCount = 0;
+var GrassTotalCount =0;
+var StoneTotalCount =0;
+var hide_treasure_grassTotalCount=0;
+
 // Create a 5x5 grid of bunnies
-for (var i = 0; i < 100; i++) {
-	if(i%23==0)
+for (var i = 0; i < 2500; i++) { 
+  var random_val = Math.floor(Math.random() * i * 31);
+	if(random_val%500<40 && GrassTotalCount<=800)
 	{
     var grass = new PIXI.Sprite(grasstexture);
-    grass.height = 50;
-		grass.width = 50;
-		grass.anchor.set(0.5,0.5);
-		grass.x = (i % 10) * 50;
-		grass.y = Math.floor(i / 10) * 50;
+    grass.height = 30;
+		grass.width = 30;
+		//grass.anchor.set(0.5,0.5);
+		grass.x = (i % 50) * 30;
+		grass.y = Math.floor(i / 50) * 30;
 		container.addChild(grass);
     grassArr[grassCnt]=grass;
     grassCnt++;
+    GrassTotalCount++;
 	}
-	else if( i%27==0)
+	else if(random_val%500<42 && TreasureTotalCount <=15)
   {
     var treasure = new PIXI.Sprite(treasuretexture);
-    treasure.height = 50;
-    treasure.width = 50;
-    treasure.anchor.set(0.5,0.5);
-    treasure.x = (i % 10) * 50;
-    treasure.y = Math.floor(i / 10) * 50;
+    treasure.height = 30;
+    treasure.width = 30;
+    //treasure.anchor.set(0.5,0.5);
+    treasure.x = (i % 50) * 30;
+    treasure.y = Math.floor(i / 50) * 30;
     container.addChild(treasure);
     treasureArr[treasureCnt]=treasure;
     CheckArr[treasureCnt]=false;
     treasureCnt++;
+    TreasureTotalCount++;
     
   }
-  else if( i%31==0)
+  else if(random_val%500<72 && StoneTotalCount <= 800)
   {
     var stone = new PIXI.Sprite(stonetexture);
-    stone.height = 50;
-    stone.width = 50;
-    stone.anchor.set(0.5,0.5);
-    stone.x = (i % 10) * 50;
-    stone.y = Math.floor(i / 10) * 50;
+    stone.height = 30;
+    stone.width = 30;
+    //stone.anchor.set(0.5,0.5);
+    stone.x = (i % 50) * 30;
+    stone.y = Math.floor(i / 50) * 30;
     container.addChild(stone);
     stoneArr[stoneCnt]=stone;
     stoneCnt++;
-    
+    StoneTotalCount++;
+  }
+  else if(random_val%500<74 && hide_treasure_grassTotalCount <= 15)
+  {
+    var hide_treasure_grass = new PIXI.Sprite(hide_treasure_grasstexture);
+    hide_treasure_grass.height = 30;
+    hide_treasure_grass.width = 30;
+    //hide_treasure_grass.anchor.set(0.5,0.5);
+    hide_treasure_grass.x = (i % 50) * 30;
+    hide_treasure_grass.y = Math.floor(i / 50) * 30;
+    container.addChild(hide_treasure_grass);
+    hide_treasure_grassArr[hide_treasure_grassCnt]=hide_treasure_grass;
+    hide_treasure_grassCnt++;
+    hide_treasure_grassTotalCount++;
   }
 	else
 	{
 		var ground = new PIXI.Sprite(texture);
-		ground.height = 50;
-		ground.width = 50;
-		ground.anchor.set(0.5,0.5);
-		ground.x = (i % 10) * 50;
-		ground.y = Math.floor(i / 10) * 50;
+		ground.height = 30;
+		ground.width = 30;
+		//ground.anchor.set(0.5,0.5);
+		ground.x = (i % 50) * 30;
+		ground.y = Math.floor(i / 50) * 30;
 		container.addChild(ground);
 		
 	}
@@ -153,11 +180,11 @@ PIXI.loader.add('bunny', 'images/mon.png').load(function (loader, resources) {
     bunny.position.x = 400;
     bunny.position.y = 300;
 
-    bunny.height = 50;
-    bunny.width = 50;
+    bunny.height = 30;
+    bunny.width = 30;
 
-    bunny.anchor.x=0.5;
-    bunny.anchor.y=0.5;
+    //bunny.anchor.x=0.5;
+    //bunny.anchor.y=0.5;
     
 
     // Add the bunny to the scene we are building.
@@ -188,10 +215,10 @@ function play(delta)
     if(hitTestRectangle(bunny, grassArr[i]))
   	{
       //var thing = new PIXI.Graphics();
-      grassArr[i].interactive=true;
-      grassArr[i].texture = hide_grass;
       bunny.interactive = true;
       bunny.texture = hide_bunny;
+      grassArr[i].interactive=true;
+      grassArr[i].texture = hide_grass;
       break;
   	}
   	else
@@ -200,6 +227,23 @@ function play(delta)
       bunny.texture = bunnytexture;
       grassArr[i].texture = grasstexture;
   	}
+  }
+  for(var i=0; i<hide_treasure_grassCnt; i++)
+  {
+    if(hitTestRectangle(bunny, hide_treasure_grassArr[i]))
+    {
+      bunny.interactive = true;
+      bunny.texture = hide_bunny;
+      hide_treasure_grassArr[i].interactive=true;
+      hide_treasure_grassArr[i].texture = hide_treasure_grasstexture;
+      break;
+    }
+    else
+    {
+      hide_treasure_grassArr[i].mask =null;
+      bunny.texture = bunnytexture;
+      hide_treasure_grassArr[i].texture = grasstexture;
+    }
   }
 
   for(var i=0; i<treasureCnt; i++)
@@ -226,20 +270,16 @@ function play(delta)
     if(hitTestRectangle(bunny, stoneArr[i]))
     {
       if (pkeys[38]) { //up key
-        if(bunny.position.y > -10)
-          bunny.position.y+=1;
+        bunny.position.y+=1;
       }
       if (pkeys[40]) { //down key
-        if(bunny.position.y < 455)
-         bunny.position.y-=1;
+        bunny.position.y-=1;
       }
       if (pkeys[39]) { //up key
-        if(bunny.position.x < 455)
-            bunny.position.x-=1;
+         bunny.position.x-=1;
       }
       if (pkeys[37]) { //down key
-        if(bunny.position.x > -10)
-            bunny.position.x+=1;
+        bunny.position.x+=1;
       }
     }
   }
@@ -341,5 +381,4 @@ window.onload=function(){
   {
       treasureansArr[i]=select[i];
   }
-
 };
