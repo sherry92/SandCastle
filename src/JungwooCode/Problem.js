@@ -86,17 +86,9 @@ function shuffle() {
         proArr[i - 1] = proArr[j];
         proArr[j] = x;
     }
-    for(var k=0;k<5;k++)
+    for(var k=0; k<30;k++)
     {
     	selec[k]=proArr[k];
     }
     return selec;
-}
-
-function Another(){
-    for(var i =0; i<5; i++)
-    {
-        selec1[i]=proArr[i+5];
-    }
-    return selec1;
 }
