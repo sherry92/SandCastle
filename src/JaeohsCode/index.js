@@ -131,7 +131,6 @@ for (var i = 0; i < 5000; i++) {
 	}
 }
 
-
 // Center on the screen
 container.x = (app.screen.width - container.width) / 2;
 container.y = (app.screen.height - container.height) / 2;
@@ -143,7 +142,7 @@ container.y = (app.screen.height - container.height) / 2;
 //var stage = new PIXI.Container();
 var bunny;
 PIXI.loader.add('bunny', 'images/ryan.png').load(function (loader, resources) {
-     bunny = new PIXI.Sprite(resources.bunny.texture);
+    bunny = new PIXI.Sprite(resources.bunny.texture);
 
     bunny.position.x = 1000;
     bunny.position.y = 1000;
@@ -157,6 +156,19 @@ PIXI.loader.add('bunny', 'images/ryan.png').load(function (loader, resources) {
     // Add the bunny to the scene we are building.
     container.addChild(bunny);
     bunny.interactive = true;
+
+    // camera.follow(bunny, FOLLW_STYLE, 0.5, 0.5, 64, 64);
+
+    // camera.targetOffset.x = 64;
+    // camera.targetOffset.y = 64;
+
+    // camera.targetOffset.set(64);
+
+    // camera.targetOffset.set(0);
+
+    // camera.unfollow();
+
+    // camera.targetOffset.isZero() === true;
     // kick off the animation loop (defined below)
     animate();
     play();
@@ -239,7 +251,6 @@ function play(delta)
   }
 }
 
-
 function hitTestRectangle(r1, r2) {
 	//Define the variables we'll need to calculate
   let hit, combinedHalfWidths, combinedHalfHeights, vx, vy;
@@ -315,20 +326,15 @@ function animate() {
     app.render(container);
 }
 
-
-
 var pkeys=[];
 window.onkeydown = function (e) {
     var code = e.keyCode ? e.keyCode : e.which;
     pkeys[code]=true;
-
 }
 window.onkeyup = function (e) {
   var code = e.keyCode ? e.keyCode : e.which;
   pkeys[code]=false;
 };
-
-
 window.onload=function(){
   let select = shuffle();
   for(var i=0; i<3; i++)
@@ -337,9 +343,3 @@ window.onload=function(){
   }
 
 };
-
-// world.position.set(app.screen.width/2, app.screen.height/2);
-// world.scale.set(bunny);
-// world.rotation = some_rotation;
-
-// world.pivot.copy(sprite.position);
