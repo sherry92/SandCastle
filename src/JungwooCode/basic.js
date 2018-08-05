@@ -73,9 +73,9 @@ function init(){
 */
 
 function Game(){
-  init();
+  init(); 
   //requestAnimationFrame(Game);
-  
+
   console.log(clickX);
   console.log(clickY);
 }
