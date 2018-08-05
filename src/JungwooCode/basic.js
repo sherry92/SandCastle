@@ -1,6 +1,7 @@
 document.write('<script type="text/javascript" src="Problem.js"></script>');
 let Round=0;
 
+
 var treasureansArr = new Array();
 
 
@@ -9,6 +10,8 @@ document.body.appendChild(app.view);
 app.stage.interactive = true;
 
 var container = new PIXI.Container();
+
+
 
 app.stage.addChild(container);
 
@@ -40,6 +43,12 @@ var hide_treasure_grassArr = new Array();
 var hide_treasure_grassCnt =0;
 
 var CheckArr = new Array();
+var CheckArr_hide = new Array();
+var map = new Array();
+var map_count = 0;
+
+var Problem_Arr= new Array();
+var move_check = false;
 
 (function() {
     var wf = document.createElement('script');
@@ -67,6 +76,7 @@ function init()
         fontWeight: 'bold',
         fontStyle: 'italic',
         fontSize: 30,
+
         fontFamily: 'Arvo',
         fill: '#3e1707',
         align: 'center',
@@ -91,7 +101,6 @@ function score(){
 var TreasureTotalCount = 0;
 var GrassTotalCount =0;
 var StoneTotalCount =0;
-var hide_treasure_grassTotalCount=0;
 
 // Create a 5x5 grid of bunnies
 for (var i = 0; i < 2500; i++) { 
@@ -99,17 +108,21 @@ for (var i = 0; i < 2500; i++) {
 	if(random_val%500<40 && GrassTotalCount<=800)
 	{
     var grass = new PIXI.Sprite(grasstexture);
+    grass.interactive=true;
     grass.height = 30;
 		grass.width = 30;
 		//grass.anchor.set(0.5,0.5);
 		grass.x = (i % 50) * 30;
 		grass.y = Math.floor(i / 50) * 30;
+    grass.buttonMode = true;
+    grass
+      .on('pointerdown', move);
 		container.addChild(grass);
     grassArr[grassCnt]=grass;
     grassCnt++;
     GrassTotalCount++;
 	}
-	else if(random_val%500<42 && TreasureTotalCount <=15)
+	else if(random_val%500<43 && TreasureTotalCount <=15)
   {
     var treasure = new PIXI.Sprite(treasuretexture);
     treasure.height = 30;
@@ -117,6 +130,10 @@ for (var i = 0; i < 2500; i++) {
     //treasure.anchor.set(0.5,0.5);
     treasure.x = (i % 50) * 30;
     treasure.y = Math.floor(i / 50) * 30;
+    treasure.interactive=true;
+    treasure.buttonMode=true;
+    treasure
+      .on('pointerdown', move);
     container.addChild(treasure);
     treasureArr[treasureCnt]=treasure;
     CheckArr[treasureCnt]=false;
@@ -124,7 +141,7 @@ for (var i = 0; i < 2500; i++) {
     TreasureTotalCount++;
     
   }
-  else if(random_val%500<72 && StoneTotalCount <= 800)
+  else if(random_val%500<73 && StoneTotalCount <= 800)
   {
     var stone = new PIXI.Sprite(stonetexture);
     stone.height = 30;
@@ -136,8 +153,9 @@ for (var i = 0; i < 2500; i++) {
     stoneArr[stoneCnt]=stone;
     stoneCnt++;
     StoneTotalCount++;
+    
   }
-  else if(random_val%500<74 && hide_treasure_grassTotalCount <= 15)
+  else if(random_val%500<76 && TreasureTotalCount <=15)
   {
     var hide_treasure_grass = new PIXI.Sprite(hide_treasure_grasstexture);
     hide_treasure_grass.height = 30;
@@ -145,10 +163,15 @@ for (var i = 0; i < 2500; i++) {
     //hide_treasure_grass.anchor.set(0.5,0.5);
     hide_treasure_grass.x = (i % 50) * 30;
     hide_treasure_grass.y = Math.floor(i / 50) * 30;
+    hide_treasure_grass.buttonMode= true;
+    hide_treasure_grass.interactive=true;
+    hide_treasure_grass
+      .on('pointerdown', move);
     container.addChild(hide_treasure_grass);
     hide_treasure_grassArr[hide_treasure_grassCnt]=hide_treasure_grass;
+    CheckArr_hide[hide_treasure_grassCnt]=false;
     hide_treasure_grassCnt++;
-    hide_treasure_grassTotalCount++;
+    TreasureTotalCount++;
   }
 	else
 	{
@@ -158,9 +181,16 @@ for (var i = 0; i < 2500; i++) {
 		//ground.anchor.set(0.5,0.5);
 		ground.x = (i % 50) * 30;
 		ground.y = Math.floor(i / 50) * 30;
+    ground.interactive=true;
+    ground.buttonMode= true;
+    ground
+      .on('pointerdown', move);
+      //.on('pointerup', stopmove);
+      //.on('pointermove', move);
+       
 		container.addChild(ground);
-		
 	}
+
 }
 
 
@@ -177,6 +207,8 @@ var bunny;
 PIXI.loader.add('bunny', 'images/mon.png').load(function (loader, resources) {
      bunny = new PIXI.Sprite(resources.bunny.texture);
 
+
+
     bunny.position.x = 400;
     bunny.position.y = 300;
 
@@ -190,22 +222,65 @@ PIXI.loader.add('bunny', 'images/mon.png').load(function (loader, resources) {
     // Add the bunny to the scene we are building.
     container.addChild(bunny);
     bunny.interactive = true;
+    
     // kick off the animation loop (defined below)
     animate();
     play();
 });
 
 //     문제에 대한 답
-for(var i=0; i<treasureCnt; i++)
+for(var count=0; count<treasureCnt; count++)
 {
-  let count = i;
-  treasureArr[count].on('pointerdown', function(e){
-    if(CheckArr[count]==true)
+  let c_count= count;
+  //alert(count);
+  treasureArr[c_count].on('pointerdown', function(e){
+    if(CheckArr[c_count]==true)
     {
-      alert(treasureansArr[count].ans);
+      alert(treasureansArr[c_count].ans);
+      if(treasureansArr[c_count].ans == Problem_Arr[Round].ans)
+      {
+        alert("Congratulations! Get 1 Point");
+        Round++;
+        Next_Round();
+      }
+      else
+      {
+        alert(Problem_Arr[Round].ans);
+      }
     }
   });
 }
+
+for(var count=0; count<hide_treasure_grassCnt; count++)
+{
+  let cc_count=count;
+  //alert(count+treasureCnt);
+  hide_treasure_grassArr[cc_count].on('pointerdown', function(e){
+    if(CheckArr_hide[cc_count]==true)
+    {
+      alert(treasureansArr[treasureCnt+cc_count].ans);
+      if(treasureansArr[treasureCnt+cc_count].ans == Problem_Arr[Round].ans)
+      {
+        alert("Congratulations! Get 1 Point");
+        Round++;
+        Next_Round();
+
+      }
+      else
+      {
+        alert(Problem_Arr[Round].ans);
+      }
+    }
+  });
+}
+
+function onmove(delta){
+  move_check = true;
+}
+
+
+
+
 
 function play(delta)
 {
@@ -219,7 +294,7 @@ function play(delta)
       bunny.texture = hide_bunny;
       grassArr[i].interactive=true;
       grassArr[i].texture = hide_grass;
-      break;
+      
   	}
   	else
   	{
@@ -236,13 +311,14 @@ function play(delta)
       bunny.texture = hide_bunny;
       hide_treasure_grassArr[i].interactive=true;
       hide_treasure_grassArr[i].texture = hide_treasure_grasstexture;
-      break;
+      CheckArr_hide[i] = true;
     }
     else
     {
       hide_treasure_grassArr[i].mask =null;
       bunny.texture = bunnytexture;
       hide_treasure_grassArr[i].texture = grasstexture;
+      CheckArr_hide[i] = false;
     }
   }
 
@@ -269,19 +345,25 @@ function play(delta)
   {
     if(hitTestRectangle(bunny, stoneArr[i]))
     {
-      if (pkeys[38]) { //up key
-        bunny.position.y+=1;
+      /*if(point_x == bunny.x)
+      {
+        check_left=false;
+        check_right= false;
       }
-      if (pkeys[40]) { //down key
+      if(point_y == bunny.y)
+      {
+        check_up=false;
+        check_down= false;
+      }*/
+      if(check_up)
         bunny.position.y-=1;
-      }
-      if (pkeys[39]) { //up key
-         bunny.position.x-=1;
-      }
-      if (pkeys[37]) { //down key
+      if(check_down)
+        bunny.position.y+=1;
+      if(check_left)
         bunny.position.x+=1;
-      }
-    }
+      if(check_right)
+        bunny.position.x-=1;
+        }
   }
 }
 
@@ -336,9 +418,36 @@ function hitTestRectangle(r1, r2) {
   return hit;
 };
 
+var check_up= false;
+var check_down= false;
+var check_right= false;
+var check_left= false;
+var point_x;
+var point_y;
+
+
 function animate() {
+   requestAnimationFrame(animate);
+  if(point_x == bunny.x)
+  {
+    check_left=false;
+    check_right= false;
+  }
+  if(point_y == bunny.y)
+  {
+    check_up=false;
+    check_down= false;
+  }
+  if(check_up)
+    bunny.position.y+=1;
+  if(check_down)
+    bunny.position.y-=1;
+  if(check_left)
+    bunny.position.x-=1;
+  if(check_right)
+    bunny.position.x+=1;
+
     // start the timer for the next animation loop
-    requestAnimationFrame(animate);
     //apply keys
     if (pkeys[38]) { //up key
       //if(bunny.position.y > -10)
@@ -356,7 +465,6 @@ function animate() {
       //if(bunny.position.x > -10)
       		bunny.position.x-=1;
     }
-
     // this is the main render call that makes pixi draw your container and its children.
     app.render(container);
 }
@@ -377,8 +485,66 @@ window.onkeyup = function (e) {
 
 window.onload=function(){
   let select = shuffle();
-  for(var i=0; i<3; i++)
+  for(var i=0; i<treasureCnt; i++)
   {
       treasureansArr[i]=select[i];
   }
+  for(var i=treasureCnt; i<hide_treasure_grassCnt+treasureCnt; i++)
+  {
+      treasureansArr[i]=select[treasureCnt+i];
+  }
+
+
+  var check_pro= new Array;
+  for(var i=0; i<hide_treasure_grassCnt+treasureCnt; i++)
+  {
+      check_pro[i] = select[i];
+  }
+
+  var j, x, i;
+    for (i = check_pro.length; i; i -= 1) {    //i는 proArr의 길이
+        j = Math.floor(Math.random() * i);
+            //j는 0부터 29까지 수를 random으로 뽑는다.
+        x = check_pro[i - 1];            //x는 proArr[i-1]의 값
+        check_pro[i - 1] = check_pro[j];
+        check_pro[j] = x;
+        //console.log(check_pro[i]);
+    }
+
+  for(var k=0; k<5;k++)
+  {
+    Problem_Arr[k]=check_pro[k];
+  }
+    alert(Problem_Arr[Round].pro);
 };
+ 
+
+function Next_Round(){
+  if(Round!=0)
+  {
+    alert("Next Round!");
+    alert(Problem_Arr[Round].pro);
+  }
+}
+
+function move(){ 
+    if(this.x <= bunny.x)
+        check_left=true;
+    else
+        check_left=false;
+    if(this.x > bunny.x)
+        check_right=true;
+    else
+        check_right=false;
+    if(this.y <= bunny.y)
+        check_down = true;
+    else
+        check_down=false;
+    if(this.y > bunny.y)
+        check_up=true;
+    else
+        check_up=false;
+    point_x = this.x;
+    point_y = this.y;
+}
+
