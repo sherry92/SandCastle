@@ -35,27 +35,61 @@ var app = new PIXI.Application(w, h);
 //app.height = window.innerHeight;
 
 document.body.appendChild(app.view);
+var background = PIXI.Sprite.fromImage('images/stone.png');
+background.width = app.screen.width;
+background.height = app.screen.height;
+
+// add background to stage...
+app.stage.addChild(background);
+
 var container = new PIXI.Container();
 container.width = Window.width;
 container.height = Window.height;
 app.stage.addChild(container);
 
 let count =0;
-
+let combo = 0;
 
 var Card_Back = PIXI.Texture.fromImage('images/Card_back.png');
 var Card_Img = PIXI.Texture.fromImage('images/mon.png');
+var next_Stage_Img = PIXI.Texture.fromImage('images/Card23.png');
+
 var Round = 1;
-var Rount_length_count= 5;
-var Round_length = Rount_length_count * Rount_length_count;
+var Round_length_count= 4;
+var Round_length = Round_length_count * Round_length_count;
 var Card_Img_Arr= new Array();
 var Card_Arr=new Array();
 var clickX, clickY;
-
+// total 
+var uvgotCard = 0;
+var Game_Status = 0;
+var next_Stage = new PIXI.Sprite(next_Stage_Img);
 var Card_Check_Arr= new Array();
 
-    
+var style = new PIXI.TextStyle({
+    fontFamily: 'Comic Sans MS',
+    fontSize: 84,
+    fontStyle: 'italic',
+    fontVariant: 'small-caps',
+    fontWeight: 'bold',
+    fill: ['#ffffff', '#00ff99'], // gradient
+    stroke: '#4a1850',
+    strokeThickness: 5,
+    dropShadow: true,
+    dropShadowColor: '#000000',
+    dropShadowBlur: 4,
+    dropShadowAngle: Math.PI / 6,
+    dropShadowDistance: 6,
+    wordWrap: true,
+    wordWrapWidth: 440
+});
 
+var comboText = new PIXI.Text(combo + 'Combo!', style);
+comboText.x = 30;
+comboText.y = 180; 
+comboText.visible = false;
+
+app.stage.addChild(comboText);    
 
 Game();
 
@@ -65,11 +99,11 @@ function init(){
     var card = new PIXI.Sprite(Card_Back);
     card.interactive = true;
     card.buttonMode= true;
-    //Card.filters = [new PIXI.filters.GlowFilter(15, 2, 1, 0xFF0000, 0.5)];
+
     card.height = 100;
     card.width = 100;
-    card.x = (i % Rount_length_count) * 110;
-    card.y = Math.floor(i / Rount_length_count) * 110;    
+    card.x = (i % Round_length_count) * 110;
+    card.y = Math.floor(i / Round_length_count) * 110;    
     Card_Arr.push(card);
     container.addChild(card);
   }
@@ -79,7 +113,29 @@ function init(){
 
   shuffle_Card();
 
+  next_Stage.interactive = true;
+  next_Stage.buttonMode= true;
+
+  next_Stage.height = 150;
+  next_Stage.width = 150;
+
+  next_Stage.x = (i % Round_length_count) * 180;
+  next_Stage.y = Math.floor(i / Round_length_count) * 180;
+  next_Stage.visible = false;
+
+  container.addChild(next_Stage);
+
+  next_Stage.on('pointerdown', function(){
+    Round++;
+    Card_Arr = [];
+    Card_Img_Arr = [];
+    Card_Check_Arr = [];
+    container.removeChildren();
+    Game();
+  });
+
   function shuffle_Card(){
+    uvgotCard = Round_length;
     for(var input_Card=1; input_Card<(Round_length/2)+1; input_Card++)
     {
       var Card_Front = PIXI.Texture.fromImage('images/Card'+input_Card+'.png');
@@ -88,13 +144,14 @@ function init(){
     }
     var j, x, i;
     for (i = Card_Img_Arr.length; i; i -= 1) 
-    {    //i는 proArr의 길이
-        j = Math.floor(Math.random() * i);    //j는 0부터 29까지 수를 random으로 뽑는다.
-        x = Card_Img_Arr[i - 1];            //x는 proArr[i-1]의 값
+    {    
+        j = Math.floor(Math.random() * i);    
+        x = Card_Img_Arr[i - 1];           
         Card_Img_Arr[i - 1] = Card_Img_Arr[j];
         Card_Img_Arr[j] = x;
     }
   }
+
   for(var i=0; i<Card_Arr.length; i++)
   {
     Card_Check_Arr.push(0);
@@ -117,19 +174,29 @@ function init(){
   }
 }
 
-
-  
-
-
 function Game(){
   init();
-  Start();
+  InGame();
 }
 
-
-function Start(){
-  setTimeout(Start,500);
+function InGame(){
+  setTimeout(InGame,500);
   var check_i=-1;
+
+  if(count == 0){
+    sleep(200);
+    comboText.visible = false; 
+  }
+
+  if(uvgotCard == 0 && Time > 0){
+    Game_Status = 1;
+    next_Stage.visible = true;
+
+  } else if(Time <= 0){
+    Game_Status = 2;
+    console.log(Game_Status);
+  }
+
   if(count % 2 == 0 && count > 0)
   {
     for(var i = 0; i<Card_Arr.length; i++)
@@ -145,14 +212,19 @@ function Start(){
         if(Card_Img_Arr[check_i] == Card_Img_Arr[i])
         {
           console.log("come here3");
+          combo++;
+          comboText.text = combo + 'Combo!';
+          comboText.visible = true;          
           Card_Arr[check_i].visible = false;
           Card_Arr[i].visible = false;
           Card_Check_Arr[check_i]=2;
           Card_Check_Arr[i] = 2;
+          uvgotCard -= 2;
           count = 0;
           sleep(300); 
           break;
         }
+
         else
         {
           console.log("come here4");
@@ -161,6 +233,7 @@ function Start(){
           Card_Check_Arr[check_i]=0;
           Card_Check_Arr[i] = 0;
           count = 0;
+          combo = 0;
           sleep(300);
           break;
         }
@@ -178,7 +251,7 @@ function sleep(milliseconds) {
   }
 }
 
-
+var Time = 60;
 var Time_Bar_IMG = new PIXI.Texture.fromImage('images/Timer.png');
 var Time_Back_IMG = new PIXI.Texture.fromImage('images/Timer_Back.png');
 var Time_Bar = new PIXI.Sprite(Time_Bar_IMG);
@@ -205,6 +278,11 @@ app.stage.addChild(Time_Bar);
 app.stage.addChild(Time_Back);
 app.stage.addChild(Score_Text);
 
+//window.onload.function(){
   app.ticker.add(function() {
-      
-});
+    Time -= 0.01666;
+        if(Time <= 0)
+          Time = 0;
+        Score_Text.text = 'Score : ' + Math.floor(Time);        
+  });
+//}
