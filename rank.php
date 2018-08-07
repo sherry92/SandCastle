@@ -84,7 +84,8 @@
 										<ul>
 											<li><a href="index.html">Home</a></li>
 											<li><a href="main.html">Game</a></li>
-											<li><a href="rank.php">Rank</a></li>
+                      <li><a href="rank.php">Rank</a></li>
+                      <li><a href="config.php">RankD</a></li>
 											<li><a href="kakao_login.php">API</a></li>
 										</ul>
 									</div>

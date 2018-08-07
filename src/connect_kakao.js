@@ -1,5 +1,5 @@
 // 사용할 앱의 JavaScript 키를 설정해 주세요.
-Kakao.init('c881ac5f6c70b9cb513a5b1d321661c4');
+Kakao.init('18bd45ae89ccf364f10cbe495aee01ea');
 
 Kakao.Auth.createLoginButton({
     container: '#Kakao-login-btn',
