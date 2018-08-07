@@ -10,8 +10,7 @@
 		<title>SandCastle</title>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-        <!-- <link rel="icon" href="/favicon.ico?v=2" type="image/x-icon"> -->
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" /> 
+        <link rel="shortcut icon" href="/favicon.ico?v=2" type="image/x-icon" />
         <link rel="stylesheet" href="/style/main.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
 		<noscript><link rel="stylesheet" href="/style/noscript.css" /></noscript>
@@ -33,9 +32,8 @@
 										<ul>
 											<li><a href="index.html">Home</a></li>
 											<li><a href="main.html">Game</a></li>
-											<li><a href="config.php">Rank</a></li>
+											<li><a href="rank.php">Rank</a></li>
 											<li><a href="kakao_login.php">API</a></li>
-											<li><a id="custom-login-btn" href="javascript:loginWithKakao()">Log In</a></li>
 										</ul>
 									</div>
 								</li>
@@ -49,22 +47,23 @@
 							<section class="wrapper style1">
 								<h2>KAKAO SNACK GAME</h1>
                                 <p>by SandCastle</p>
-                                <a id="custom-login-btn" href="javascript:loginWithKakao()">
-                                <img src="//mud-kage.kakao.com/14/dn/btqbjxsO6vP/KPiGpdnsubSq3a0PHEGUK1/o.jpg" width="300"/>
-                                <!-- <a id="kakao-login-btn"></a>
+                                <a id="Kakao-login-btn"></a>
+                                    <!-- <img src="//mud-kage.kakao.com/14/dn/btqbjxsO6vP/KPiGpdnsubSq3a0PHEGUK1/o.jpg" width="300"/>
+                                </a> -->
+                                <!-- <a id="Kakao-login-btn"></a>
                                 <a href="http://developers.kakao.com/logout"></a> -->
                                 <!-- <a href="https://kauth.kakao.com/oauth/authorize?client_id={REST_API}&redirect_uri={REDIRECT_PATH}&response_type=code">카카오 로그인</a> -->
-                                <a id="kakao-link-btn" href="javascript:;">
+                                <!-- <a id="kakao-link-btn" href="javascript:;">
                                     <img src="//developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png"/>
-                                </a>
+                                </a> -->
                                 <!-- <a id="kakao-link-btn" href="javascript:sendLink()">
                                     <img src="//developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png"/>
                                 </a> -->
 							</section>
-							<section class="inner">
+							<!-- <section class="inner">
 								<button class="button button1" onclick="window.location.href='/main.html'">게임시작</button>
 								<button class="button button1" onclick="window.location.href='/rank.html'">랭킹보기</button>
-							</section>
+							</section> -->
 						</section>
 					</article>
 
@@ -93,7 +92,6 @@
 			<script src="/src/main.js"></script>
 
 			<script src="/src/connect_kakao.js"></script>
-            <!-- <script src="/src/intro.js"></script> -->
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 	</body>
 </html>

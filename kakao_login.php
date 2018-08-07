@@ -4,6 +4,7 @@
 	$restAPIKey = "d04ae1383bcffeba9d34606483d64c06"; //본인의 REST API KEY를 입력해주세요
 	$callbacURI = urlencode("zytls92.cafe24.com/kakao_login_callback.php"); //본인의 Call Back URL을 입력해주세요
 	$kakaoLoginUrl = "https://kauth.kakao.com/oauth/authorize?client_id=".$restAPIKey."&redirect_uri=".$callbacURI."&response_type=code";
+	echo $kakaoLoginUrl;
 ?>
 <!DOCTYPE html>
 <html>

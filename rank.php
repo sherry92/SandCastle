@@ -6,8 +6,7 @@
 		<title>SandCastle</title>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-        <!-- <link rel="icon" href="/favicon.ico?v=2" type="image/x-icon"> -->
-        <link rel="shortcut icon" href="{{$template}}/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico?v=2" type="image/x-icon" />
         <link rel="stylesheet" href="/style/main.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
 		<noscript><link rel="stylesheet" href="/style/noscript.css" /></noscript>
@@ -85,9 +84,8 @@
 										<ul>
 											<li><a href="index.html">Home</a></li>
 											<li><a href="main.html">Game</a></li>
-											<li><a href="config.php">Rank</a></li>
+											<li><a href="rank.php">Rank</a></li>
 											<li><a href="kakao_login.php">API</a></li>
-											<li><a id="custom-login-btn" href="javascript:loginWithKakao()">Log In</a></li>
 										</ul>
 									</div>
 								</li>
@@ -107,18 +105,16 @@
                                 <thead>
                                     <tr>
                                     <th width="10%">순위</th>
-                                    <th width="50%">이름</th>
+                                    <th width="40%">이름</th>
                                     <th width="10%">점수</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <c:forEach var="article" items="${articles}" varStatus="status">
                                     <tr>
-                                        <td>${article}</td>
-                                        <td>${article.nickname}</td>
-                                        <td>${article.score}</td>
-                                    <tr>
-                                    </c:forEach>
+                                    <td>1등</td>
+                                    <td>김정우</td>
+                                    <td>10000</td>
+                                    </tr>
                                 </tbody>
                                 </table>
                             </div>
@@ -135,6 +131,6 @@
 			<script src="/src/util.js"></script>
 			<script src="/src/main.js"></script>
 
-            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 	</body>
 </html>

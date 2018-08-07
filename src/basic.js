@@ -9,7 +9,7 @@ var app = new PIXI.Application(w, h);
 //app.height = window.innerHeight;
 
 document.body.appendChild(app.view);
-var background = PIXI.Sprite.fromImage('images/stone.png');
+var background = PIXI.Sprite.fromImage('images/Back_ground4.png');
 background.width = app.screen.width;
 background.height = app.screen.height;
 
@@ -27,6 +27,7 @@ let combo = 0;
 let isClear = false;
 let score = 0;
 let totalScore = 0;
+let touch_restriction;
 
 var Card_Back = PIXI.Texture.fromImage('images/Card_back.png');
 var next_Stage_Img = PIXI.Texture.fromImage('images/Next_Stage.png');
@@ -49,6 +50,20 @@ var boast = new PIXI.Sprite(boast_Img);
 var Card_Check_Arr= new Array();
 var pivotX = container.x;
 var pivotY = container.y;
+
+const style1 = new PIXI.TextStyle({
+    fill: [
+        "#fd9302",
+        "black"
+    ],
+    fillGradientStops: [
+        0.6
+    ],
+    fontFamily: "Arial, Helvetica, sans-serif",
+    fontSize: 55,
+    fontVariant: "small-caps",
+    fontWeight: "bold"
+});
 
 var style = new PIXI.TextStyle({
     fontFamily: 'Comic Sans MS',
@@ -86,38 +101,11 @@ var ReadyTime = 5;
 var isReady = true;
 
 var Clock = new PIXI.Sprite.fromImage('images/Alarm.png');
-var Time_Text = new PIXI.Text(' : ', {
-  fontWeight: 'bold',
-  fontStyle: 'italic',
-  fontSize: 60,
-  fontFamily: 'Arvo',
-  fill: '#3e1707',
-  align: 'center',
-  stroke: '#a4410e',
-  strokeThickness: 7
-});
+var Time_Text = new PIXI.Text(' : ', style1);
 
-var Score_Text = new PIXI.Text('Score : ', {
-  fontWeight: 'bold',
-  fontStyle: 'italic',
-  fontSize: 60,
-  fontFamily: 'Arvo',
-  fill: '#3e1707',
-  align: 'center',
-  stroke: '#a4410e',
-  strokeThickness: 7
-});  
+var Score_Text = new PIXI.Text('Score : ', style1);
 
-var Round_Text = new PIXI.Text('Round : '+ Round, {
-  fontWeight: 'bold',
-  fontStyle: 'italic',
-  fontSize: 80,
-  fontFamily: 'Arvo',
-  fill: '#3e1707',
-  align: 'center',
-  stroke: '#a4410e',
-  strokeThickness: 7
-}); 
+var Round_Text = new PIXI.Text('Round : ' + Round, style1);
 
 Game();
 
@@ -169,6 +157,11 @@ function findPoint(){
     Row_length_count = 6;
     Col_length_count = 5;
     Time = 30;
+  } else {
+    Time = 30;
+    Row_length_count = 6;
+    Col_length_count = 5;
+    Time = Time - 5 *(Round / 10);
   }
 
   Round_length = Row_length_count * Col_length_count;
@@ -201,28 +194,34 @@ function findPoint(){
       }
     }
 
-  Clock.x = (w/20) * 2;
-  Clock.y = h/80;
+  Clock.x = (w/40);
+  Clock.y = h/18;
   Clock.width = w/8;
-  Clock.height = h/8;
-  Time_Text.x = (w/20) * 4;
-  Time_Text.y = h/80;
+  Clock.height = h/15;
+  Time_Text.x = (w/40) * 5;
+  Time_Text.y = h/18;
   Time_Text.width = w/8;
-  Time_Text.height = h/8;
-  Score_Text.x = (w/20) * 12;
-  Score_Text.y = h/80;
+  Time_Text.height = h/15;
+  Score_Text.x = (w/30) * 20;
+  Score_Text.y = (h/18);
   Score_Text.width = w/4;
-  Score_Text.height = h/8;
-  comboText.x = w/3;
-  comboText.y = (h/5)*2; 
+  Score_Text.height = h/15;
+  comboText.x = w/4;
+  comboText.y = (h/5);
+  comboText.width = w/2;
+  comboText.height = (h/7)*3; 
   ReadyText.x = w/3;
-  ReadyText.y = (h/5)*2;
-  ExcelText.x = w/3;
-  ExcelText.y = (h/5)*2;
+  ReadyText.y = (h/5);
+  ReadyText.width = w/3;
+  ReadyText.height = (h/7)*3;
+  ExcelText.x = w/4;
+  ExcelText.y = (h/5);
+  ExcelText.width = w/2;
+  ExcelText.height = (h/7)*3;
   Round_Text.x = (w/20) * 8;
   Round_Text.y = h/80;
   Round_Text.width = w/6;
-  Round_Text.height = h/8;  
+  Round_Text.height = h/8;   
    
   app.render(container);
   // container.x = (app.screen.width - container.width) / 2;
@@ -238,8 +237,8 @@ function init(){
   next_Stage.interactive = true;
   next_Stage.buttonMode= true;
   next_Stage.height = h/5;
-  next_Stage.width = w/5;
-  next_Stage.x = (w/9)*3;
+  next_Stage.width = w/2;
+  next_Stage.x = (w/9)*2;
   next_Stage.y = (h/5)*2;
   next_Stage.visible = false;
 
@@ -247,7 +246,7 @@ function init(){
   replay.buttonMode = true;
   replay.x = (w/9)*1;
   replay.y = (h/5)*2;
-  replay.width = w/5;
+  replay.width = w/4;
   replay.height = h/5;
   replay.visible = false;
 
@@ -255,7 +254,7 @@ function init(){
   boast.buttonMode = true;
   boast.x = (w/9)*5;
   boast.y = (h/5)*2;
-  boast.width = w/5;
+  boast.width = w/4;
   boast.height = h/5;
   boast.visible = false;
 
@@ -374,8 +373,7 @@ function InGame(){
       }     
       ReadyText.visible = false; 
       isReady = false;      
-    }else{      
-      ReadyText.x = w/2;      
+    }else{           
       ReadyText.text = Math.floor(ReadyTime) + '!';
     }
   }
@@ -387,14 +385,23 @@ function InGame(){
     next_Stage.visible = true;
     score = (Math.floor(Time) * 10) * (Round * Round);
     console.log(score);
+    if(combo == 1) score += 20;
+    else if(combo >= 2 && combo <= 3) score += 20 * 2;
+    else if(combo >= 4 && combo <= 6) score += 20 * 4;
+    else if(combo >= 7 && combo <= 8) score += 20 * 8;
+    else score += score += 20 * combo;    
     totalScore += score;
     Round++;    
     Score_Text.text = 'Score:' + totalScore;
   } 
   else if(Time <= 0){
     Game_Status = 2;
+    score = 0;
+    totalScore = 0;
     time = 60;
     Round = 1;
+    combo = 0;
+    count = 0;
     for(var i = 0; i < Round_length; i++){
       let cc = i;
       Card_Arr[cc].interactive = false;
@@ -440,6 +447,11 @@ function InGame(){
 
         else
         {
+          if(combo == 1) score += 20;
+          else if(combo >= 2 && combo <= 3) score += 20 * 2;
+          else if(combo >= 4 && combo <= 6) score += 20 * 4;
+          else if(combo >= 7 && combo <= 8) score += 20 * 8;
+          else score += score += 20 * combo;
           console.log("come here4");
           Card_Arr[check_i].texture = Card_Back;
           Card_Arr[i].texture = Card_Back;
